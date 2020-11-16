@@ -1,10 +1,19 @@
-import postcss, { Root } from 'postcss'
+import { Root, Rule, AtRule } from 'postcss'
 
-export default postcss.plugin('trim', () => (css: Root) => {
-  css.walk(({ type, raws }) => {
-    if (type === 'rule' || type === 'atrule') {
-      if (raws.before) raws.before = '\n'
-      if (raws.after) raws.after = '\n'
+function stylePluginTrim() {
+  return {
+    postcssPlugin: 'trim',
+    Once(css: Root) {
+      css.walk(node => {
+        if (node instanceof Rule || node instanceof AtRule) {
+          if (node.raws.before) node.raws.before = '\n'
+          if (node.raws.after) node.raws.after = '\n'
+        }
+      })
     }
-  })
-})
+  }
+}
+
+stylePluginTrim.postcss = true
+
+export default stylePluginTrim
